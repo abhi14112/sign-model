@@ -2,9 +2,9 @@ import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 
-model = load_model('1_my_cnn_model.h5')
+model = load_model('my_cnn_model.h5')
 
-label_list = ['1','2','3','4','5']
+label_list = ['1','2']
 # label_list = ['1', '2','3','4','5','7','8','9','0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z']
 
 def preprocess_frame(frame):
