@@ -1,16 +1,14 @@
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
-
 model = load_model('my_cnn_model.h5')
-
-label_list = ['1','2']
-# label_list = ['1', '2','3','4','5','7','8','9','0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z']
-
+fgbg = cv2.createBackgroundSubtractorMOG2() 
+label_list = ['0','1','2','3','4','5','6','7','8','9']
+# label_list = ['A','B','C','D','E','F','G','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Z']
 def preprocess_frame(frame):
     if frame is None:
         return None
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
+    # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
     frame = cv2.resize(frame, (100, 100))
     frame = frame / 255.0
     return np.expand_dims(frame, axis=-1)  # Adjust shape to (100, 100, 1)
@@ -23,9 +21,7 @@ def classify_frame(frame):
     label = label_list[class_idx]
     confidence = predictions[0][class_idx]
     return label, confidence
-
 cap = cv2.VideoCapture(0)
-
 window_width = 1200
 window_height = 900
 
@@ -37,7 +33,7 @@ while True:
     flipped_frame = cv2.flip(frame, 1)
     cv2.rectangle(flipped_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
     frame = flipped_frame[y:y+h, x:x+w]
-    frame = cv2.resize(frame, (100, 100))
+    frame = fgbg.apply(frame) 
     if not ret:
         print("Error: Failed to capture frame")
         break

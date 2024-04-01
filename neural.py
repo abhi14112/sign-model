@@ -9,8 +9,6 @@ x_train, y_train = data['X'], data['Y']
 
 x_train = np.array(x_train).reshape(-1, 100, 100, 1)
 
-# Convert labels to one-hot encoding
-
 y_train = tf.keras.utils.to_categorical(y_train)
 model = Sequential([
     Conv2D(16, (2, 2), activation='relu', input_shape=(100, 100, 1)),
@@ -22,7 +20,7 @@ model = Sequential([
     Flatten(),
     Dense(120, activation='relu'),  
     Dropout(0.2), 
-    Dense(2, activation='softmax')
+    Dense(10, activation='softmax')
 ])
 
 model.compile(optimizer='adam',
@@ -30,6 +28,5 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 print("Training...")
-history = model.fit(x_train, y_train, epochs=15, batch_size=32, validation_split=0.2)
-
+history = model.fit(x_train, y_train, epochs=10, batch_size=32, validation_split=0.2)
 model.save('my_cnn_model.h5')
