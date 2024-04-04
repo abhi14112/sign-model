@@ -3,10 +3,12 @@ import cv2 as cv
 import numpy as np
 import random
 path = "./data"
-def preprocess(dataset_path, img_size=(100,100)):
+def preprocess(dataset_path, img_size=(90,90)):
     x = []
     y = []
     labels = os.listdir(dataset_path)
+    labels = ['0','1','2','3','4','5','6','7','8','9','10','11','12']
+    print(labels)
     label_map = {label: idx for idx, label in enumerate(labels)}
     for label in labels:
         label_path = os.path.join(dataset_path, label)  
