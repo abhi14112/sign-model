@@ -1,14 +1,14 @@
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
-model = load_model('sign_model.h5')
+model = load_model('sign_model.1.h5')
 label_list = ['0','1','2','3','4','5','6','7','8','9','A','B','C']
 def preprocess_frame(frame):
     if frame is None:
         return None
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
-    blur = cv2.GaussianBlur(frame,(7,7),2)
-    th3 = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
+    blur = cv2.GaussianBlur(frame,(5,5),1.5)
+    th3 = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,9,2)
     ret, res = cv2.threshold(th3, 100, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
     frame = res
     frame = cv2.resize(frame, (98, 98))

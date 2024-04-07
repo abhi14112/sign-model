@@ -16,8 +16,8 @@ def preprocess(dataset_path, img_size=(98,98)):
         for image in os.listdir(label_path):
             image_path = os.path.join(label_path, image)  
             img_grid = cv.imread(image_path, cv.IMREAD_GRAYSCALE)
-            blur = cv.GaussianBlur(img_grid,(7,7),2)
-            th3 = cv.adaptiveThreshold(blur,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,11,2)
+            blur = cv.GaussianBlur(img_grid,(5,5),1.5)
+            th3 = cv.adaptiveThreshold(blur,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,9,2)
             ret, res = cv.threshold(th3, 80, 255, cv.THRESH_BINARY_INV+cv.THRESH_OTSU)
             img_grid = res
             img_grid = cv.resize(img_grid, img_size)
