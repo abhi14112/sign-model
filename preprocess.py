@@ -3,7 +3,7 @@ import cv2 as cv
 import numpy as np
 import random
 path = "./data"
-def preprocess(dataset_path, img_size=(90,90)):
+def preprocess(dataset_path, img_size=(98,98)):
     x = []
     y = []
     labels = os.listdir(dataset_path)
@@ -12,15 +12,19 @@ def preprocess(dataset_path, img_size=(90,90)):
     label_map = {label: idx for idx, label in enumerate(labels)}
     for label in labels:
         label_path = os.path.join(dataset_path, label)  
-        print(label) 
+        print(label)
         for image in os.listdir(label_path):
             image_path = os.path.join(label_path, image)  
             img_grid = cv.imread(image_path, cv.IMREAD_GRAYSCALE)
-            image = np.array(img_grid) / 255.0
-            new_array = cv.resize(image, img_size)
-            x.append(new_array)
+            blur = cv.GaussianBlur(img_grid,(7,7),2)
+            th3 = cv.adaptiveThreshold(blur,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,11,2)
+            ret, res = cv.threshold(th3, 80, 255, cv.THRESH_BINARY_INV+cv.THRESH_OTSU)
+            img_grid = res
+            img_grid = cv.resize(img_grid, img_size)
+            img_grid = np.array(img_grid) / 255.0
+            x.append(img_grid)
             y.append(label_map[label])
-            x.append(new_array)
+            x.append(img_grid)
             y.append(label_map[label])
     data = list(zip(x, y))
     random.shuffle(data)

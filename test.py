@@ -1,14 +1,18 @@
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
-model = load_model('my_cnn_model.h5')
+model = load_model('sign_model.h5')
 label_list = ['0','1','2','3','4','5','6','7','8','9','A','B','C']
 def preprocess_frame(frame):
     if frame is None:
         return None
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
-    frame = cv2.resize(frame, (90, 90))
-    frame = frame / 255.0
+    blur = cv2.GaussianBlur(frame,(7,7),2)
+    th3 = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
+    ret, res = cv2.threshold(th3, 100, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    frame = res
+    frame = cv2.resize(frame, (98, 98))
+    frame = np.array(frame) / 255.0
     return np.expand_dims(frame, axis=-1) 
 def classify_frame(frame):
     preprocessed_frame = preprocess_frame(frame)
@@ -38,7 +42,7 @@ while True:
         print("Error: Frame classification failed")
         break
     cv2.putText(flipped_frame, f'{label} ({confidence:.2f})', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    cv2.imshow('Camera', flipped_frame)
+    cv2.imshow('Camera', flipped_frame )
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cap.release()
